@@ -77,10 +77,16 @@ class Response extends AbstractResponse
         return $status==1;
     }
 
+    public function isPending()
+    {
+        $status = $this->getStatus();
+        return $status==12;
+    }
+
     public function isVoided()
     {
         $status = $this->getStatus();
-        return $status==10;
+        return ($status==10||$status==11);
     }
 
     /**
@@ -103,5 +109,33 @@ class Response extends AbstractResponse
             return @$this->data['ReasonCode']." - ".@$this->data['ReasonMessage'];
 
         return null;
+    }
+
+    public function getBoleto()
+    {
+        $data = $this->getData();
+        $boleto = array();
+        $boleto['boleto_url'] = @$data['Payment']['Url'];
+        $boleto['boleto_url_pdf'] = @$data['Payment']['Url'];
+        $boleto['boleto_barcode'] = @$data['Payment']['DigitableLine'];
+        $boleto['boleto_expiration_date'] = @$data['Payment']['ExpirationDate'];
+        $boleto['boleto_valor'] = (@$data['Payment']['Amount']*1.0)/100.0;
+        $boleto['boleto_transaction_id'] = @$data['Payment']['PaymentId'];
+        //@$this->setTransactionReference(@$data['transaction_id']);
+
+        return $boleto;
+    }
+
+    public function getPix()
+    {
+        $data = $this->getData();
+        $boleto = array();
+        $boleto['pix_qrcodebase64image'] = @$data['Payment']['QrcodeBase64Image'];
+        $boleto['pix_qrcodestring'] = @$data['Payment']['QrCodeString'];
+        $boleto['pix_valor'] = (@$data['Payment']['Amount']*1.0)/100.0;
+        $boleto['pix_transaction_id'] = @$data['Payment']['PaymentId'];
+        //@$this->setTransactionReference(@$data['transaction_id']);
+
+        return $boleto;
     }
 }

@@ -15,7 +15,8 @@ class PurchaseRequest extends AuthorizeRequest
         // faz o registro do cliente, se não houver especificado
 
         $data = parent::getData();
-        $data["Payment"]["Capture"] = true;
+        if(strcmp(strtolower($this->getPaymentType()), "creditcard")==0)
+            $data["Payment"]["Capture"] = true;
         //$this->getNotifyUrl()  // verificar se no painel é especificado uma url para notificação
 
         return $data;

@@ -153,6 +153,33 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return (int)round((parent::getAmount()*100.0), 0);
     }
 
+    public function getDueDate()
+    {
+        $dueDate = $this->getParameter('dueDate');
+        if($dueDate)
+            return $dueDate;
+
+        $time = localtime(time());
+        $ano = $time[5]+1900;
+        $mes = $time[4]+1+1;
+        $dia = 1;// $time[3];
+        if($mes>12)
+        {
+            $mes=1;
+            ++$ano;
+        }
+
+        $dueDate = sprintf("%04d-%02d-%02d", $ano, $mes, $dia);
+        $this->setDueDate($dueDate);
+
+        return $dueDate;
+    }
+
+    public function setDueDate($value)
+    {
+        return $this->setParameter('dueDate', $value);
+    }
+
     public function getResource()
     {
         return $this->resource;

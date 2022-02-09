@@ -16,50 +16,128 @@ class AuthorizeRequest extends AbstractRequest
     public function getData()
     {
         $this->validate('customer', 'paymentProvider', 'paymentType');
+
+        $data = [];
+        switch(strtolower($this->getPaymentType()))
+        {
+            case 'creditcard':
+                $data = $this->getDataCreditCard();
+                break;
+
+            case 'boleto':
+                $data = $this->getDataBoleto();
+                break;
+
+            case 'pix':
+                $data = $this->getDataPix();
+                break;
+
+            default:
+                $data = $this->getDataCreditCard();
+        }
+
+        return $data;
+    }
+
+    public function getDataCreditCard()
+    {
+        $this->validate('card');
         $card = $this->getCard();
 
         $data = [
             "MerchantOrderId"=>$this->getOrderId(),
             "Customer"=>$this->getCustomerData(),
             "Payment"=>[
-              "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
-              "Type"=>$this->getPaymentType(),
-              "Amount"=>$this->getAmount(),
-              "Currency"=>"BRL",
-              "Country"=>"BRA",
-              "Installments"=>$this->getInstallments(),
-              "Interest"=>"ByMerchant",
-              "Capture"=>false, // true faz a captura, e false é apenas autorização sem lançar na fatura precisando capturar depois
-              "Authenticate"=>false,
-              "Recurrent"=>false,
-              "SoftDescriptor"=>$this->getSoftDescriptor(),
-              "DoSplit"=>false,
-              "CreditCard"=>[
-                 "CardNumber"=>$card->getNumber(),
-                 "Holder"=>$card->getName(),
-                 "ExpirationDate"=>sprintf("%02d/%04d", $card->getExpiryMonth(), $card->getExpiryYear()),
-                 "SecurityCode"=>$card->getCvv(),
-                 "Brand"=>$card->getBrand(),
-                 "SaveCard"=>"false",
-                 "Alias"=>"",
-                 /*"CardOnFile"=>[
-                    "Usage"=>"Used",
-                    "Reason"=>"Unscheduled"
-                 ]*/
-              ],
-              /*"Credentials"=>[
-                 "Code"=>"9999999",
-                 "Key"=>"D8888888",
-                 "Password"=>"LOJA9999999",
-                 "Username"=>"#Braspag2018@NOMEDALOJA#",
-                 "Signature"=>"001"
-              ],
-              "ExtraDataCollection"=>[
-                    [
-                    "Name"=>"NomeDoCampo",
-                    "Value"=>"ValorDoCampo"
-                    ]
-                ]*/
+                "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
+                "Type"=>$this->getPaymentType(),
+                "Amount"=>$this->getAmount(),
+                "Currency"=>"BRL",
+                "Country"=>"BRA",
+                "Installments"=>$this->getInstallments(),
+                "Interest"=>"ByMerchant",
+                "Capture"=>false, // true faz a captura, e false é apenas autorização sem lançar na fatura precisando capturar depois
+                "Authenticate"=>false,
+                "Recurrent"=>false,
+                "SoftDescriptor"=>$this->getSoftDescriptor(),
+                "DoSplit"=>false,
+                "CreditCard"=>[
+                    "CardNumber"=>$card->getNumber(),
+                    "Holder"=>$card->getName(),
+                    "ExpirationDate"=>sprintf("%02d/%04d", $card->getExpiryMonth(), $card->getExpiryYear()),
+                    "SecurityCode"=>$card->getCvv(),
+                    "Brand"=>$card->getBrand(),
+                    "SaveCard"=>"false",
+                    "Alias"=>"",
+                    /*"CardOnFile"=>[
+                       "Usage"=>"Used",
+                       "Reason"=>"Unscheduled"
+                    ]*/
+                ],
+                /*"Credentials"=>[
+                   "Code"=>"9999999",
+                   "Key"=>"D8888888",
+                   "Password"=>"LOJA9999999",
+                   "Username"=>"#Braspag2018@NOMEDALOJA#",
+                   "Signature"=>"001"
+                ],
+                "ExtraDataCollection"=>[
+                      [
+                      "Name"=>"NomeDoCampo",
+                      "Value"=>"ValorDoCampo"
+                      ]
+                  ]*/
+            ]
+        ];
+
+        return $data;
+    }
+
+    public function getDataBoleto()
+    {
+        $customer = $this->getCustomerData();
+        unset($customer["DeliveryAddress"]);
+
+        $data = [
+            "MerchantOrderId"=>$this->getOrderId(),
+            "Customer"=>$customer,
+            "Payment"=>[
+                "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
+                "Type"=>$this->getPaymentType(),
+                "Amount"=>$this->getAmount(),
+                //"BoletoNumber"=>$this->getOrderId(),
+                //"Assignor"=> $this->getSoftDescriptor(),
+                //"Demonstrative"=> "Compra em ".$this->getSoftDescriptor(),
+                "ExpirationDate"=> $this->getDueDate(),
+                //"Identification"=> "CNPJ do cedente",
+                //"Instructions"=> "Aceitar somente até a data de vencimento.",
+                //"DaysToFine"=> 1,  // só para bradesco
+                //"FineRate"=> 10.00000,// só para bradesco
+                //"FineAmount"=> 1000,// só para bradesco
+                //"DaysToInterest"=> 1,// só para bradesco
+                //"InterestRate"=> 0.00000,// só para bradesco
+                //"InterestAmount"=> 0,// só para bradesco
+                //"DiscountAmount"=> 0,// só para bradesco
+                //"DiscountLimitDate"=> "2017-12-31",// só para bradesco
+                //"DiscountRate"=> 0.00000// só para bradesco
+            ]
+        ];
+
+        return $data;
+    }
+
+    public function getDataPix()
+    {
+        $customer = $this->getCustomerData();
+        unset($customer["Address"]);
+        unset($customer["DeliveryAddress"]);
+
+        $data = [
+            "MerchantOrderId"=>$this->getOrderId(),
+            "Customer"=>$customer,
+            "Payment"=>[
+                "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
+                "Type"=>$this->getPaymentType(),
+                "Amount"=>$this->getAmount(),
             ]
         ];
 
