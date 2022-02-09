@@ -49,7 +49,7 @@ class AuthorizeRequest extends AbstractRequest
             "Customer"=>$this->getCustomerData(),
             "Payment"=>[
                 "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
-                "Type"=>$this->getPaymentType(),
+                "Type"=>"CreditCard",
                 "Amount"=>$this->getAmount(),
                 "Currency"=>"BRL",
                 "Country"=>"BRA",
@@ -102,7 +102,7 @@ class AuthorizeRequest extends AbstractRequest
             "Customer"=>$customer,
             "Payment"=>[
                 "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
-                "Type"=>$this->getPaymentType(),
+                "Type"=>"Boleto",
                 "Amount"=>$this->getAmount(),
                 //"BoletoNumber"=>$this->getOrderId(),
                 //"Assignor"=> $this->getSoftDescriptor(),
@@ -136,7 +136,7 @@ class AuthorizeRequest extends AbstractRequest
             "Customer"=>$customer,
             "Payment"=>[
                 "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
-                "Type"=>$this->getPaymentType(),
+                "Type"=>"Pix",
                 "Amount"=>$this->getAmount(),
             ]
         ];
