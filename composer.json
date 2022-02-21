@@ -1,0 +1,33 @@
+{
+    "name": "clembet/omnipay-braspag",
+    "description": "Braspag driver for Omnipay 3.0",
+    "type": "library",
+    "keywords": [
+        "gateway",
+        "braspag",
+        "omnipay",
+        "payment"
+    ],
+    "homepage": "https://github.com/clembet/omnipay-braspag",
+    "require": {
+        "php": ">=7.0",
+        "clembet/omnipay-common": "^3.0"
+    },
+    "require-dev": {
+        "clembet/omnipay-tests": "~3.0"
+    },
+    "license": "MIT",
+    "authors": [
+	{
+		"name": "Keite Clembet",
+		"email": "clembet@gmail.com"
+	}
+    ],
+    "autoload": {
+        "psr-4": {
+            "Omnipay\\Braspag\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
