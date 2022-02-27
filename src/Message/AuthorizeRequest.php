@@ -135,7 +135,7 @@ class AuthorizeRequest extends AbstractRequest
             "MerchantOrderId"=>$this->getOrderId(),
             "Customer"=>$customer,
             "Payment"=>[
-                "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
+                "Provider"=>$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
                 "Type"=>"Pix",
                 "Amount"=>$this->getAmount(),
             ]
@@ -159,7 +159,7 @@ class AuthorizeRequest extends AbstractRequest
         $card = $this->getCard();
         $customer = $this->getCustomer();
 
-        return [
+        $data = [
             "Name"=>$customer->getName(),
             "Identity"=>$customer->getDocumentNumber(),
             "IdentityType"=>"CPF",
@@ -176,7 +176,11 @@ class AuthorizeRequest extends AbstractRequest
                 "Country"=>"BRA",
                 "District"=>$customer->getBillingDistrict()
             ],
-            "DeliveryAddress"=>[
+        ];
+
+        if(strcmp(strtolower($this->getPaymentType()), "creditcard")==0)
+        {
+            $data["DeliveryAddress"]=[
                 "Street"=>$card->getShippingAddress1(),
                 "Number"=>$card->getShippingNumber(),
                 "Complement"=>$card->getShippingAddress2(),
@@ -185,8 +189,10 @@ class AuthorizeRequest extends AbstractRequest
                 "State"=>$card->getShippingState(),
                 "Country"=>"BRA",
                 "District"=>$card->getShippingDistrict()
-            ]
-        ];
+            ];
+        }
+
+        return $data;
     }
 
     public function getItemData()

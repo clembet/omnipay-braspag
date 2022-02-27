@@ -46,7 +46,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         $json = $response->getBody()->getContents();
         $array = @json_decode($json, true);
-        print_r($array);
+        //print_r($array);
 
         return $this->response = $this->createResponse(@$array);
     }
