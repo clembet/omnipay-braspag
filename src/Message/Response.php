@@ -35,7 +35,7 @@ class Response extends AbstractResponse
      *
      * @return string|null
      */
-    public function getTransactionReference()
+    public function getTransactionID()
     {
         if(isset($this->data['Payment']['PaymentId']))
             return @$this->data['Payment']['PaymentId'];
@@ -129,13 +129,12 @@ class Response extends AbstractResponse
     public function getPix()
     {
         $data = $this->getData();
-        $boleto = array();
-        $boleto['pix_qrcodebase64image'] = @$data['Payment']['QrcodeBase64Image'];
-        $boleto['pix_qrcodestring'] = @$data['Payment']['QrCodeString'];
-        $boleto['pix_valor'] = (@$data['Payment']['Amount']*1.0)/100.0;
-        $boleto['pix_transaction_id'] = @$data['Payment']['PaymentId'];
-        //@$this->setTransactionReference(@$data['transaction_id']);
+        $pix = array();
+        $pix['pix_qrcodebase64image'] = @$data['Payment']['QrcodeBase64Image'];
+        $pix['pix_qrcodestring'] = @$data['Payment']['QrCodeString'];
+        $pix['pix_valor'] = (@$data['Payment']['Amount']*1.0)/100.0;
+        $pix['pix_transaction_id'] = @$data['Payment']['PaymentId'];
 
-        return $boleto;
+        return $pix;
     }
 }
