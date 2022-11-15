@@ -239,7 +239,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             "Payment"=>[
                 "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
                 "Type"=>"CreditCard",
-                "Amount"=>$this->getAmountInteger(),
+                "Amount"=>(int)($this->getAmount()*100.0),
                 "Currency"=>"BRL",
                 "Country"=>"BRA",
                 "Installments"=>$this->getInstallments(),
@@ -292,7 +292,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             "Payment"=>[
                 "Provider"=>$this->getTestMode()?"Simulado":$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
                 "Type"=>"Boleto",
-                "Amount"=>$this->getAmountInteger(),
+                "Amount"=>(int)($this->getAmount()*100.0),
                 //"BoletoNumber"=>$this->getOrderId(),
                 //"Assignor"=> $this->getSoftDescriptor(),
                 //"Demonstrative"=> "Compra em ".$this->getSoftDescriptor(),
@@ -326,7 +326,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             "Payment"=>[
                 "Provider"=>$this->getPaymentProvider(), // https://braspag.github.io/manual/braspag-pagador#lista-de-providers
                 "Type"=>"Pix",
-                "Amount"=>$this->getAmountInteger(),
+                "Amount"=>(int)($this->getAmount()*100.0),
             ]
         ];
 

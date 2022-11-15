@@ -32,7 +32,7 @@ class CaptureRequest extends AbstractRequest
             "%s/%s/capture?amount=%d",
             $this->getEndpoint(),
             $this->getTransactionID(),
-            $this->getAmountInteger()
+            (int)($this->getAmount()*100.0)
         );
 
         //print_r([$this->getMethod(), $url, $headers]);exit();

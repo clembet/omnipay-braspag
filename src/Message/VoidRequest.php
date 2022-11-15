@@ -46,7 +46,7 @@ class VoidRequest extends AbstractRequest   // está dando  erro para vendas com
             "%s/%s/void?amount=%d",
             $this->getEndpoint(),
             $this->getTransactionID(),
-            $this->getAmountInteger()
+            (int)($this->getAmount()*100.0)
         );
 
         //print_r([$this->getMethod(), $url, $headers]);exit();
